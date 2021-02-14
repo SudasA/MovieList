@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.example.movielist.adapters.ActorListAdapter
+import com.example.movielist.adapters.ActorListItemDecorator
 import com.example.movielist.data.model.Movie
 import com.example.movielist.databinding.FragmentMoviesDetailsBinding
 import com.example.movielist.domain.MoviesDataSource
@@ -48,7 +50,7 @@ class FragmentMoviesDetails : Fragment() {
             listenerMovie?.backPressed()
         }
         bindMovie()
-/*
+
         binding.actorsRv.addItemDecoration(
             ActorListItemDecorator(
                 resources.getDimension(R.dimen.margin_8).toInt())
@@ -57,7 +59,7 @@ class FragmentMoviesDetails : Fragment() {
         val adapter: ActorListAdapter = ActorListAdapter()
         movie?.actorsList?.let { adapter.bindActors(it) }
         binding.actorsRv.adapter = adapter
- */
+
     }
 
     private fun bindMovie() {
