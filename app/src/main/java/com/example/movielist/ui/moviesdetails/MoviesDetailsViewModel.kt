@@ -5,8 +5,8 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.example.movielist.data.model.Movie
-import com.example.movielist.data.model.getMovieById
+import com.example.movielist.data.models.Movie
+import com.example.movielist.data.models.getMovieById
 import kotlinx.coroutines.launch
 
 class MoviesDetailsViewModel(

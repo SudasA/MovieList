@@ -3,8 +3,8 @@ package com.example.movielist.ui.movieslist
 
 import android.app.Application
 import androidx.lifecycle.*
-import com.example.movielist.data.model.Movie
-import com.example.movielist.data.model.loadMovies
+import com.example.movielist.data.models.Movie
+import com.example.movielist.data.models.loadMovies
 import kotlinx.coroutines.launch
 
 

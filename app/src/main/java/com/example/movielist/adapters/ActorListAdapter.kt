@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.movielist.R
-import com.example.movielist.data.model.Actor
+import com.example.movielist.data.models.Actor
 import com.example.movielist.databinding.ViewHolderActorBinding
 
 

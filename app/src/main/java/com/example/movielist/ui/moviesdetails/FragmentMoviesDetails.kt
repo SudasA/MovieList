@@ -13,7 +13,7 @@ import com.example.movielist.MovieClickListener
 import com.example.movielist.R
 import com.example.movielist.adapters.ActorListAdapter
 import com.example.movielist.adapters.ActorListItemDecorator
-import com.example.movielist.data.model.Movie
+import com.example.movielist.data.models.Movie
 import com.example.movielist.databinding.FragmentMoviesDetailsBinding
 import java.lang.IllegalArgumentException
 import kotlin.properties.Delegates

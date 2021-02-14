@@ -11,10 +11,9 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
-import com.bumptech.glide.request.target.Target
 import com.example.movielist.MovieClickListener
 import com.example.movielist.R
-import com.example.movielist.data.model.Movie
+import com.example.movielist.data.models.Movie
 import com.example.movielist.databinding.ViewHolderMovieBinding
 
 
