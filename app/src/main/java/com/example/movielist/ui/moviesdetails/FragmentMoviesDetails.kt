@@ -1,34 +1,29 @@
-package com.example.movielist.ui.moviesdetails
+package com.stopkaaaa.androidacademyproject.ui.moviesdetails
 
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.isVisible
+import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.bumptech.glide.Glide
+import coil.load
+import com.example.movielist.BuildConfig
 import com.example.movielist.MovieClickListener
 import com.example.movielist.R
 import com.example.movielist.adapters.ActorListAdapter
 import com.example.movielist.adapters.ActorListItemDecorator
-import com.example.movielist.data.models.Movie
 import com.example.movielist.databinding.FragmentMoviesDetailsBinding
-import java.lang.IllegalArgumentException
-import kotlin.properties.Delegates
+import com.stopkaaaa.androidacademyproject.data.models.Actor
+import com.stopkaaaa.androidacademyproject.data.models.Movie
 
-const val MOVIE_ID_ARG = "Movie"
+
+const val MOVIE_TAG = "Movie"
 
 class FragmentMoviesDetails : Fragment() {
 
-    private var movieId by Delegates.notNull<Int>()
-    private val viewModel: MoviesDetailsViewModel by lazy {
-        ViewModelProvider(
-            this,
-            MoviesDetailsViewModelFactory(requireActivity().application, movieId)
-        ).get(MoviesDetailsViewModel::class.java)
-    }
+    lateinit var viewModel: MoviesDetailsViewModel
 
     private var _binding: FragmentMoviesDetailsBinding? = null
     private val binding get() = _binding!!
@@ -40,10 +35,7 @@ class FragmentMoviesDetails : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentMoviesDetailsBinding.inflate(inflater, container, false)
-
-        val bundle: Bundle? = this.arguments
-        movieId =
-            bundle?.getInt(MOVIE_ID_ARG) ?: throw IllegalArgumentException("Couldn't find movieId")
+        viewModel = ViewModelProvider(this).get(MoviesDetailsViewModel::class.java)
         return binding.root
     }
 
@@ -61,7 +53,11 @@ class FragmentMoviesDetails : Fragment() {
         )
 
         viewModel.currentMovie.observe(this.viewLifecycleOwner, this::bindMovie)
+        viewModel.actorsList.observe(this.viewLifecycleOwner, this::bindActors)
         viewModel.loadingState.observe(this.viewLifecycleOwner, this::setLoading)
+
+        val bundle: Bundle? = this.arguments
+        bundle?.getInt(MOVIE_TAG)?.let { viewModel.loadMovieById(it) }
 
     }
 
@@ -70,36 +66,34 @@ class FragmentMoviesDetails : Fragment() {
             binding.movieTitle.text = title
             binding.genre.text = genres.toString()
                 .subSequence(1, genres.toString().length - 1)
-            context?.let { _context ->
-                Glide.with(_context)
-                    .load(movie.backdrop)
-                    .placeholder(R.drawable.backdrop_placeholder)
-                    .dontAnimate()
-                    .into(binding.backgroundPoster)
+            binding.backgroundPoster.load(BuildConfig.TMDB_IMAGE_URL + movie.backdrop) {
+                placeholder(R.drawable.backdrop_placeholder)
             }
             binding.reviewsCount.text = resources.getString(R.string.reviews, votes)
-            binding.rating.rating = ratings.div(2)
+            binding.rating.rating = ratings.div(2).toFloat()
             binding.storylineBody.text = overview
             if (adult) {
                 binding.ageLimit.text = resources.getString(R.string.age_adult)
             } else {
                 binding.ageLimit.text = resources.getString(R.string.age_non_adult)
             }
+        }
+    }
 
-            if (actors.isEmpty()) {
-                binding.castTitle.visibility = View.INVISIBLE
-            } else {
-                binding.castTitle.visibility = View.VISIBLE
-                val adapter = ActorListAdapter()
-                adapter.bindActors(actors)
-                binding.actorsRv.adapter = adapter
-            }
+    private fun bindActors(actorsList: List<Actor>) {
+        if (actorsList.isEmpty()) {
+            binding.castTitle.visibility = View.INVISIBLE
+        } else {
+            binding.castTitle.visibility = View.VISIBLE
+            val adapter = ActorListAdapter()
+            adapter.bindActors(actorsList)
+            binding.actorsRv.adapter = adapter
         }
     }
 
     private fun setLoading(loading: Boolean) {
-        binding.movieDetailsProgressBar.isVisible = loading
-        binding.movieDetailsContainer.isVisible = !loading
+        binding.movieDetailsProgressBar.isGone = !loading
+        binding.movieDetailsContainer.isGone = loading
     }
 
     override fun onAttach(context: Context) {
@@ -120,10 +114,10 @@ class FragmentMoviesDetails : Fragment() {
     }
 
     companion object {
-        fun newInstance(movieId: Int): FragmentMoviesDetails {
+        fun newInstance(movieID: Int): FragmentMoviesDetails {
             return FragmentMoviesDetails().apply {
                 arguments = Bundle().apply {
-                    putInt(MOVIE_ID_ARG, movieId)
+                    putInt(MOVIE_TAG, movieID)
                 }
             }
         }
