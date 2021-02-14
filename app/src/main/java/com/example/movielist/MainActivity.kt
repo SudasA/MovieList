@@ -3,6 +3,8 @@ package com.example.movielist
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import com.example.movielist.ui.moviesdetails.FragmentMoviesDetails
+import com.example.movielist.ui.movieslist.FragmentMoviesList
 
 class MainActivity : AppCompatActivity(), MovieClickListener {
 

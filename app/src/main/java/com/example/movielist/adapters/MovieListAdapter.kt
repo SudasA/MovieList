@@ -1,5 +1,6 @@
 package com.example.movielist.adapters
 
+
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
@@ -16,26 +17,27 @@ import com.example.movielist.R
 import com.example.movielist.data.model.Movie
 import com.example.movielist.databinding.ViewHolderMovieBinding
 
+
 class MovieListAdapter(private val movieClickListener: MovieClickListener) :
     RecyclerView.Adapter<MovieViewHolder>() {
 
     private var movies: MutableList<Movie> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
-      val binding = ViewHolderMovieBinding
-          .inflate(LayoutInflater.from(parent.context), parent, false)
-          return MovieViewHolder(binding)
+        val binding = ViewHolderMovieBinding
+            .inflate(LayoutInflater.from(parent.context), parent, false)
+        return MovieViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
-       holder.onBind(movies[position])
+        holder.onBind(movies[position])
         holder.itemView.setOnClickListener {
-            movieClickListener.movieClicked(position)
+            movieClickListener.movieClicked(movies[position].id)
         }
     }
 
     override fun getItemCount(): Int {
-        return  movies.size
+        return movies.size
     }
 
     fun bindMovies(newList: List<Movie>?) {
@@ -45,7 +47,6 @@ class MovieListAdapter(private val movieClickListener: MovieClickListener) :
             notifyDataSetChanged()
         }
     }
-
 }
 
 class MovieViewHolder(private val binding: ViewHolderMovieBinding) :
@@ -55,8 +56,7 @@ class MovieViewHolder(private val binding: ViewHolderMovieBinding) :
         binding.movie1Title.text = movie.title
         binding.movie1Genre.text = movie.genres.toString()
             .subSequence(1, movie.genres.toString().length-1)
-        binding.movie1Duration.text =
- itemView.context.resources.getString(R.string.duration, movie.runtime)
+        binding.movie1Duration.text = itemView.context.resources.getString(R.string.duration, movie.runtime)
         if (movie.adult) {
             binding.movie1AgeLimit.text = itemView.context.resources.getString(R.string.age_adult)
         } else {
@@ -66,7 +66,7 @@ class MovieViewHolder(private val binding: ViewHolderMovieBinding) :
             .load(movie.poster)
             .apply(RequestOptions().dontTransform())
             .placeholder(R.drawable.background_poster_gradient)
-            .listener(object : RequestListener<Drawable> {
+            .listener(object : RequestListener<Drawable>{
                 override fun onLoadFailed(
                     e: GlideException?,
                     model: Any?,
