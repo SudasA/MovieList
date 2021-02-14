@@ -3,6 +3,8 @@ package com.example.movielist.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.example.movielist.R
 import com.example.movielist.data.model.Actor
 import com.example.movielist.databinding.ViewHolderActorBinding
 
@@ -50,6 +52,9 @@ class ActorViewHolder(private val binding: ViewHolderActorBinding) :
     RecyclerView.ViewHolder(binding.root) {
     fun onBind(actor: Actor) {
         binding.actorName.text = actor.name
-        binding.actorPhoto.setImageResource(actor.photo)
+        Glide.with(binding.root)
+            .load(actor.picture)
+            .placeholder(R.drawable.background_poster_gradient)
+            .into(binding.actorPhoto)
     }
 }

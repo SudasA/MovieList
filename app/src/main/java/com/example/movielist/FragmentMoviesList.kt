@@ -6,10 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.example.movielist.adapters.MovieListAdapter
 import com.example.movielist.adapters.MovieListItemDecoration
+import com.example.movielist.data.model.loadMovies
 import com.example.movielist.databinding.FragmentMoviesListBinding
-import com.example.movielist.domain.MoviesDataSource
+import kotlinx.coroutines.launch
 
 
 class FragmentMoviesList: Fragment() {
@@ -36,8 +38,13 @@ class FragmentMoviesList: Fragment() {
         )
 
         val adapter = listenerMovie?.let { MovieListAdapter(it) }
-        adapter?.bindMovies(MoviesDataSource().getMovies())
         binding.movieListRv.adapter = adapter
+        lifecycleScope.launch {
+            val movieList = context?.let { loadMovies(it) }
+           adapter?.bindMovies(movieList)
+            binding.progressBar.visibility = View.GONE
+            binding.movieListRv.visibility = View.VISIBLE
+        }
     }
 
 

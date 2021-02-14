@@ -5,12 +5,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import com.example.movielist.data.model.getMovieById
+import com.bumptech.glide.Glide
 import com.example.movielist.adapters.ActorListAdapter
 import com.example.movielist.adapters.ActorListItemDecorator
 import com.example.movielist.data.model.Movie
 import com.example.movielist.databinding.FragmentMoviesDetailsBinding
-import com.example.movielist.domain.MoviesDataSource
+import kotlinx.coroutines.launch
+
+const val MOVIE_TAG = "Movie"
 
 private const val MOVIE_KEY = "Movie"
 
@@ -20,56 +26,74 @@ class FragmentMoviesDetails : Fragment() {
     private var _binding: FragmentMoviesDetailsBinding? = null
     private val binding get() = _binding!!
     private var listenerMovie: MovieClickListener? = null
-    lateinit var movie: Movie
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        val bundle: Bundle? = this.arguments
-        if ( bundle != null) {
-            val movieId = bundle.getInt(MOVIE_KEY)
-            movie = MoviesDataSource().getMovies().first{
-                it.id == movieId
-            }
-
-        }
-
-    }
+    private var movie: Movie? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View?{
+    ): View? {
         _binding = FragmentMoviesDetailsBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         binding.back.setOnClickListener {
             listenerMovie?.backPressed()
         }
-        bindMovie()
 
         binding.actorsRv.addItemDecoration(
             ActorListItemDecorator(
                 resources.getDimension(R.dimen.margin_8).toInt())
         )
 
-        val adapter: ActorListAdapter = ActorListAdapter()
-        movie?.actorsList?.let { adapter.bindActors(it) }
-        binding.actorsRv.adapter = adapter
-
+        val bundle: Bundle? = this.arguments
+        lifecycleScope.launch {
+            movie = context?.let { bundle?.getInt(MOVIE_TAG)?.let { it1 -> getMovieById(it, it1) } }
+            bindMovie()
+        }
     }
 
     private fun bindMovie() {
-        binding.movieTitle.text = movie.title
-        binding.genre.text = movie.genre
-        binding.ageLimit.text = binding.root.resources.getString(R.string.age_limit, movie?.ageLimit)
-        movie.posterBig.run { binding.backgroundPoster.setImageResource(this) }
-        binding.reviewsCount.text = binding.root.resources.getString(R.string.reviews, movie?.reviewsCount)
-        binding.rating.rating = (movie.rating.toFloat() ?: 0) as Float
-        binding.storylineBody.text = movie.storyLine
+        movie?.let {
+            binding.movieTitle.text = resources.getString(R.string.error_loading_title)
+            binding.genre.text = it.genres.toString()
+                .subSequence(1, it.genres.toString().length - 1)
+            context?.let { _context ->
+                Glide.with(_context)
+                    .load(movie?.backdrop)
+                    .placeholder(R.drawable.backdrop_placeholder)
+                    .dontAnimate()
+                    .into(binding.backgroundPoster)
+            }
+            binding.reviewsCount.text = resources.getString(R.string.reviews, it.votes)
+            binding.rating.rating = it.ratings.div(2) ?: Float.MIN_VALUE
+            binding.storylineBody.text = it.overview
+            if (it.adult) {
+                binding.ageLimit.text = resources.getString(R.string.age_adult)
+            } else {
+                binding.ageLimit.text = resources.getString(R.string.age_non_adult)
+            }
+
+            if (it.actors.isEmpty()) {
+                binding.castTitle.visibility = View.INVISIBLE
+            }
+            else {
+                binding.castTitle.visibility = View.VISIBLE
+                val adapter = ActorListAdapter()
+                adapter.bindActors(it.actors)
+                binding.actorsRv.adapter = adapter
+            }
+        }
+        if (movie == null) {
+            Toast.makeText(
+                context,
+                getString(R.string.error_show_movie_details),
+                Toast.LENGTH_SHORT
+            ).show()
+        }
     }
 
     override fun onAttach(context: Context) {
@@ -91,7 +115,6 @@ class FragmentMoviesDetails : Fragment() {
         super.onDetach()
         listenerMovie = null
     }
-
 
     companion object {
         fun newInstance(movieId: Int): FragmentMoviesDetails {
