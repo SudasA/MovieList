@@ -2,28 +2,39 @@ package com.example.movielist.ui.movieslist
 
 
 import android.app.Application
-import androidx.lifecycle.*
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.example.movielist.data.models.Movie
-import com.example.movielist.data.models.loadMovies
+import com.example.movielist.data.net.RetrofitClient
 import kotlinx.coroutines.launch
 
 
 class MoviesListViewModel(application: Application) : AndroidViewModel(application) {
 
     private val _mutableMoviesList = MutableLiveData<List<Movie>>(emptyList())
-    private val _mutableLoadingState = MutableLiveData(false)
+    private val _mutableLoadingState = MutableLiveData(Status.DONE)
 
     val moviesList: LiveData<List<Movie>> get() = _mutableMoviesList
-    val loadingState: LiveData<Boolean> get() = _mutableLoadingState
+    val loadingState: LiveData<Status> get() = _mutableLoadingState
 
-    init {
+    fun load() {
         viewModelScope.launch {
-            _mutableLoadingState.value = true
+            _mutableLoadingState.value = Status.FIRST_LOADING
 
-            val moviesList = loadMovies(getApplication())
-            _mutableMoviesList.value = moviesList
+            val moviesResponse =  RetrofitClient.getPopularMovies()
 
-            _mutableLoadingState.value = false
+            val movies = List(moviesResponse.moviesIdList.size) {
+                RetrofitClient.getMovieById(moviesResponse.moviesIdList[it].id)
+            }
+
+
+            _mutableMoviesList.value = movies
+
+            _mutableLoadingState.value = Status.DONE
         }
     }
 }
+
+enum class Status { FIRST_LOADING, DONE }

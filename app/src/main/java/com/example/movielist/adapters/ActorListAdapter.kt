@@ -6,8 +6,8 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.example.movielist.BuildConfig
 import com.example.movielist.R
+import com.example.movielist.data.models.Actor
 import com.example.movielist.databinding.ViewHolderActorBinding
-import com.stopkaaaa.androidacademyproject.data.models.Actor
 
 
 const val ACTORS_MARGIN = 8

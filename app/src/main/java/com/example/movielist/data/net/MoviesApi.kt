@@ -1,8 +1,8 @@
 package com.example.movielist.data.net
 
-import com.stopkaaaa.androidacademyproject.data.models.ActorListResponse
-import com.stopkaaaa.androidacademyproject.data.models.Movie
-import com.stopkaaaa.androidacademyproject.data.models.MovieListResponse
+import com.example.movielist.data.models.ActorListResponse
+import com.example.movielist.data.models.Movie
+import com.example.movielist.data.models.MovieListResponse
 import retrofit2.http.GET
 import retrofit2.http.Path
 

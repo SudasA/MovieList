@@ -1,4 +1,4 @@
-package com.stopkaaaa.androidacademyproject.data.models
+package com.example.movielist.data.models
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

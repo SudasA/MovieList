@@ -1,12 +1,12 @@
-package com.stopkaaaa.androidacademyproject.ui.moviesdetails
+package com.example.movielist.ui.moviesdetails
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.movielist.data.models.Actor
+import com.example.movielist.data.models.Movie
 import com.example.movielist.data.net.RetrofitClient
-import com.stopkaaaa.androidacademyproject.data.models.Actor
-import com.stopkaaaa.androidacademyproject.data.models.Movie
 import kotlinx.coroutines.launch
 
 class MoviesDetailsViewModel : ViewModel() {

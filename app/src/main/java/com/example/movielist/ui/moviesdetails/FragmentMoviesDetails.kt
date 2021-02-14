@@ -1,4 +1,4 @@
-package com.stopkaaaa.androidacademyproject.ui.moviesdetails
+package com.example.movielist.ui.moviesdetails
 
 import android.content.Context
 import android.os.Bundle
@@ -14,9 +14,9 @@ import com.example.movielist.MovieClickListener
 import com.example.movielist.R
 import com.example.movielist.adapters.ActorListAdapter
 import com.example.movielist.adapters.ActorListItemDecorator
+import com.example.movielist.data.models.Actor
+import com.example.movielist.data.models.Movie
 import com.example.movielist.databinding.FragmentMoviesDetailsBinding
-import com.stopkaaaa.androidacademyproject.data.models.Actor
-import com.stopkaaaa.androidacademyproject.data.models.Movie
 
 
 const val MOVIE_TAG = "Movie"
